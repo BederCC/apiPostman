@@ -1,0 +1,18 @@
+{
+    "idAsignatura": 1,
+    "nombreAsignatura": "Cálculo",
+    "idEstudiante": {
+        "idEstudiante": 1,
+        "idUsuario": {
+            "emailUsuario": "victoria@sawp.cl",
+            "idUsuario": 3,
+            "nombreUsuario": "Victoria Martínez",
+            "pwdUsuario": "1234",
+            "rolUsuario": "Estudiante",
+            "matriculado": 1
+        }
+    },
+    "idTareas": 1,
+    "nombreTarea": "Series de Fourier",
+    "tareaNota": 7
+}
