@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba API con GET y POST</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        pre {
+            text-align: left;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            overflow-x: auto;
+            max-height: 300px;
+            opacity: 0;
+            max-height: 0;
+            transition: opacity 1s ease-in-out, max-height 1s ease-in-out;
+        }
+
+        .visible {
+            opacity: 1;
+            max-height: 500px;
+        }
+
+        .comentario {
+            width: 100%;
+            max-width: 400px;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        aside {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
+        aside div {
+            display: flex;
+            margin: 30px;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Prueba de API con GET y POST</h1>
+
+        <h2>Solicitud GET</h2>
+        <button id="getButton">Enviar GET</button>
+        <pre id="getResult"></pre>
+    </div>
+
+    <div class="container">
+        <h2>Solicitud POST</h2>
+        <textarea id="comentario" name="comentario" class="comentario" placeholder="Escribe tu comentario aquí..."></textarea><br><br>
+        <button id="postButton">Enviar POST</button>
+    </div>
+
+    <aside id="enviarPost">
+        <div>
+            <button id="postRequest1">Enviar POST 1</button>
+            <pre id="postResult1"></pre>
+        </div>
+        <div>
+            <button id="postRequest2">Enviar POST 2</button>
+            <pre id="postResult2"></pre>
+        </div>
+        <div>
+            <button id="postRequest3">Enviar POST 3</button>
+            <pre id="postResult3"></pre>
+        </div>
+    </aside>
+
+    <script>
+        // Función para enviar una solicitud GET
+        document.getElementById('getButton').addEventListener('click', function () {
+            fetch('https://brown-emu-758639.hostingersite.com/api.php')
+                .then(response => response.json())
+                .then(data => {
+                    const resultElement = document.getElementById('getResult');
+                    resultElement.textContent = JSON.stringify(data, null, 2);
+                    resultElement.classList.add('visible');
+                })
+                .catch(error => console.error('Error en GET:', error));
+        });
+
+        // Función para enviar una solicitud POST
+        var json = "";
+        let postData = {};
+        document.getElementById('postButton').addEventListener('click', function () {
+            json = document.getElementById('comentario').value
+            if (json == "") {
+                alert("El campo de comentario no puede estar vacío");
+                return;
+            }
+            try {
+                // Intenta convertir la cadena en un objeto JSON
+                json = JSON.parse(json);
+
+                // Si la conversión es exitosa, puedes usar el objeto JSON
+                postData = json;
+                console.log("JSON válido:", postData);
+
+                // Aquí continúa con el proceso de envío del formulario o la acción deseada
+            } catch (error) {
+                // Si ocurre un error al parsear, muestra un mensaje de error
+                alert("Por favor, ingresa un formato válido de JSON.");
+                console.error("Error al parsear el JSON:", error);
+
+                // Evitar que el formulario sea enviado
+                return;
+            }
+
+            fetch('https://brown-emu-758639.hostingersite.com/api.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const resultElement = document.getElementById('postResult');
+                    resultElement.textContent = JSON.stringify(data, null, 2);
+                    resultElement.classList.add('visible');
+                })
+                .catch(error => console.error('Error en POST:', error));
+        });
+
+        // Función para enviar una solicitud POST
+        function sendPostRequest(url, data, resultElementId) {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const resultElement = document.getElementById(resultElementId);
+                    resultElement.textContent = JSON.stringify(data, null, 2);
+                    resultElement.classList.add('visible');
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    const resultElement = document.getElementById(resultElementId);
+                    resultElement.textContent = "Error al enviar el POST request";
+                    resultElement.classList.add('visible');
+                });
+        }
+
+        // Datos JSON para cada ejercicio
+        const data1 = {
+            "ID": "1",
+            "Nombre": "Jhon",
+            "Apellido": "Doe",
+            "Edad": 64,
+            "Tel": null,
+            "check": true,
+            "SO": ["Windows 10", "Ubuntu", "Android"]
+        };
+
+        const data2 = {
+            "empinfo": {
+                "employees": [
+                    {
+                        "name": "Scott Philip",
+                        "salary": "44000",
+                        "age": 27
+                    },
+                    {
+                        "name": "Tim Henn",
+                        "salary": "40000",
+                        "age": 27
+                    },
+                    {
+                        "name": "Long Yong",
+                        "salary": "40000",
+                        "age": 28
+                    }
+                ]
+            }
+        };
+
+        const data3 = {
+            "idAsignatura": 1,
+            "nombreAsignatura": "Cálculo",
+            "idEstudiante": {
+                "idEstudiante": 1,
+                "idUsuario": {
+                    "emailUsuario": "victoria@sawp.cl",
+                    "idUsuario": 3,
+                    "nombreUsuario": "Victoria Martínez",
+                    "pwdUsuario": "1234",
+                    "rolUsuario": "Estudiante",
+                    "matriculado": 1
+                }
+            },
+            "idTareas": 1,
+            "nombreTarea": "Series de Fourier",
+            "tareaNota": 7
+        };
+
+        // Configurar los botones para enviar las solicitudes POST con los datos correspondientes
+        document.getElementById('postRequest1').addEventListener('click', function () {
+            sendPostRequest('https://brown-emu-758639.hostingersite.com/api.php', data1, 'postResult1');
+        });
+
+        document.getElementById('postRequest2').addEventListener('click', function () {
+            sendPostRequest('https://brown-emu-758639.hostingersite.com/api.php', data2, 'postResult2');
+        });
+
+        document.getElementById('postRequest3').addEventListener('click', function () {
+            sendPostRequest('https://brown-emu-758639.hostingersite.com/api.php', data3, 'postResult3');
+        });
+    </script>
+</body>
+
+</html>
